@@ -48,6 +48,11 @@ foreach(lcm_lib lcm lcm-static)
     _LARGEFILE_SOURCE
     _REENTRANT
   )
+  if(NOT LCM_USE_GLIB) {
+    target_compile_definitions(${lcm_lib} PRIVATE
+      LCM_NO_GLIB
+      )
+  endif()
 
   set_target_properties(${lcm_lib} PROPERTIES
     VERSION ${LCM_VERSION}
@@ -60,8 +65,12 @@ foreach(lcm_lib lcm lcm-static)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   )
 
+  if(LCM_USE_GLIB) {
+    target_link_libraries(${lcm_lib} PRIVATE
+      GLib2::glib
+      )
+  endif()
   target_link_libraries(${lcm_lib} PRIVATE
-    GLib2::glib
     ${CMAKE_THREAD_LIBS_INIT}
   )
 

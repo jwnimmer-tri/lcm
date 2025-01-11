@@ -24,7 +24,10 @@ if(CMAKE_VERSION VERSION_LESS 3.7)
   list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/3.7")
 endif()
 
-find_package(GLib2 REQUIRED)
+option(LCM_USE_GLIB "..." ON)
+if(LCM_USE_GLIB)
+  find_package(GLib2 REQUIRED)
+endif()
 
 # Configuration and utility functions
 include(lcm-cmake/config.cmake NO_POLICY_SCOPE)

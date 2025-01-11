@@ -29,7 +29,9 @@
 #define MSG_EXT_HDR
 #endif
 
+#ifndef LCM_NO_GLIB
 #include <glib.h>
+#endif
 
 #include "dbg.h"
 #include "lcm.h"

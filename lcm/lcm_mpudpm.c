@@ -17,7 +17,9 @@
 #include <sys/uio.h>
 #endif
 
+#ifndef LCM_NO_GLIB
 #include <glib.h>
+#endif
 
 #include "dbg.h"
 #include "lcm.h"

@@ -1,15 +1,19 @@
 #ifndef __LCM_INTERNAL_H__
 #define __LCM_INTERNAL_H__
 
-#include <glib.h>
 
 #include "lcm.h"
 
+#ifndef LCM_NO_GLIB
+#include <glib.h>
 // Several thread and synchronization API functions (e.g. g_mutex_init,
 // g_cond_init, g_thread_new, etc) require 2.32
 #if GLIB_CHECK_VERSION(2, 32, 0)
 #else
 #error "LCM requires a glib version >= 2.32.0"
+#endif
+#else  // LCM_NO_GLIB
+typedef void GHashTable;
 #endif
 
 #ifdef WIN32

@@ -26,7 +26,9 @@ typedef int SOCKET;
 #define MSG_EXT_HDR
 #endif
 
+#ifndef LCM_NO_GLIB
 #include <glib.h>
+#endif  // LCM_NO_GLIB
 
 #include "lcm.h"
 #include "ringbuffer.h"

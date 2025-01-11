@@ -2,11 +2,14 @@
 #include "lcm.h"
 
 #include <assert.h>
-#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+
+#ifndef LCM_NO_GLIB
+#include <glib.h>
+#endif
 
 #include "dbg.h"
 #include "lcm_internal.h"
