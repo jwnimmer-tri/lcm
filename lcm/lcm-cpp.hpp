@@ -19,7 +19,7 @@
 #include <functional>
 #endif
 
-namespace lcm {
+namespace LCM_NAMESPACE {
 
 /**
  * @defgroup LcmCpp C++ API Reference
@@ -665,6 +665,6 @@ class LogFile {
 #define __lcm_cpp_impl_ok__
 #include "lcm-cpp-impl.hpp"
 #undef __lcm_cpp_impl_ok__
-}  // namespace lcm
+}  // namespace LCM_NAMESPACE
 
 #endif

@@ -1,0 +1,15 @@
+#ifndef __lcm_namespace_h__
+#define __lcm_namespace_h__
+
+/// This definition allows changing the name of public library symbols, so that
+/// multiple libraries can depend on independent copies of LCM.
+#define LCM_NAMESPACE @LCM_NAMESPACE@
+
+// Utility macros for LCM_NAMSPACED, below.
+#define LCM_PP_CONCAT1(a, b) a##b
+#define LCM_PP_CONCAT(a, b) LCM_PP_CONCAT1(a, b)
+
+// Replaces `name` with `{LCM_NAMESPACE}_name`.
+#define LCM_NAMESPACED(name) LCM_PP_CONCAT(LCM_PP_CONCAT(LCM_NAMESPACE, _), name)
+
+#endif

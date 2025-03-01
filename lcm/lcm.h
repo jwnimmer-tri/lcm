@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "lcm_version.h"
+#include "lcm_namespace.h"
 
 #ifdef LCM_PYTHON
 #define LCM_EXPORT
@@ -20,6 +21,17 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define lcm_create LCM_NAMESPACED(create)
+#define lcm_destroy LCM_NAMESPACED(destroy)
+#define lcm_get_fileno LCM_NAMESPACED(get_fileno)
+#define lcm_subscribe LCM_NAMESPACED(subscribe)
+#define lcm_unsubscribe LCM_NAMESPACED(unsubscribe)
+#define lcm_publish LCM_NAMESPACED(publish)
+#define lcm_handle LCM_NAMESPACED(handle)
+#define lcm_handle_timeout LCM_NAMESPACED(handle_timeout)
+#define lcm_subscription_set_queue_capacity LCM_NAMESPACED(subscription_set_queue_capacity)
+#define lcm_subscription_get_queue_size LCM_NAMESPACED(subscription_get_queue_size)
 
 /**
  * @defgroup LcmC C API Reference

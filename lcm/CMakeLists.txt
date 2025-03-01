@@ -2,6 +2,12 @@ if(UNIX)
   find_package(Threads)
 endif()
 
+configure_file(
+  lcm_namespace.h.in
+  lcm_namespace.h
+  @ONLY
+)
+
 set(lcm_sources
   eventlog.c
   lcm.c
@@ -24,6 +30,7 @@ set(lcm_install_headers
   lcm-cpp.hpp
   lcm-cpp-impl.hpp
   ${CMAKE_CURRENT_BINARY_DIR}/lcm_export.h
+  ${CMAKE_CURRENT_BINARY_DIR}/lcm_namespace.h
 )
 
 if(WIN32)

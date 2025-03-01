@@ -38,6 +38,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(CMAKE_MACOSX_RPATH FALSE)
 endif()
 
+set(LCM_NAMESPACE "lcm" CACHE STRING "The namespace of C/C++ symbols")
+
 # Core modules
 add_subdirectory(lcm)
 add_subdirectory(lcmgen)

@@ -1,8 +1,10 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_shared_library.bzl", "cc_shared_library")
 load("//lcm-bazel/private:copts.bzl", "WARNINGS_COPTS")
+load("//lcm-bazel/private:set_lcm_namespace.bzl", "set_lcm_namespace")
 
 package(
     default_applicable_licenses = ["//:license"],
@@ -29,6 +31,7 @@ LCM_INSTALL_HEADERS = [
     "eventlog.h",
     "lcm.h",
     "lcm_coretypes.h",
+    "lcm_namespace.h",
     "lcm_version.h",
     "lcm-cpp.hpp",
     "lcm-cpp-impl.hpp",
@@ -61,6 +64,17 @@ LCM_COMPILE_DEFINITIONS_PRIVATE = [
 
 # Declare the libraries.
 
+string_flag(
+    name = "lcm_namespace",
+    build_setting_default = "lcm",
+)
+
+set_lcm_namespace(
+    name = "lcm_namespace.h",
+    original_hdr = "lcm_namespace.h.in",
+    lcm_namespace_flag = ":lcm_namespace",
+)
+
 LCM_PRIVATE_HEADERS = [
     "dbg.h",
     "ioutils.h",
@@ -72,27 +86,33 @@ LCM_PRIVATE_HEADERS = [
 ]
 
 [
-    # To obtain the correct include paths `<lcm/lcm.h>`, we need to copy public
-    # headers to a subdir now and then set `strip_include_prefix` later.
+    # To obtain the correct include paths `<lcm/lcm.h>`, we need to copy all
+    # code to a subdir now and then set `strip_include_prefix` later.
     copy_file(
-        name = "_add_hdrs_" + paths.basename(x),
+        name = "_copy_" + paths.basename(x),
         src = x,
-        out = "hdrs/lcm/" + x,
+        out = "copied/lcm/" + x,
     )
-    for x in LCM_INSTALL_HEADERS + LCM_INSTALL_HEADERS_WIN32
+    for x in (
+        LCM_INSTALL_HEADERS
+        + LCM_INSTALL_HEADERS_WIN32
+        + LCM_PRIVATE_HEADERS
+        + LCM_SOURCES
+        + LCM_SOURCES_WIN32
+    )
 ]
 
 cc_library(
     name = "lcm-coretypes",
-    hdrs = ["hdrs/lcm/lcm_coretypes.h"],
-    strip_include_prefix = "/lcm/hdrs",
+    hdrs = ["copied/lcm/lcm_coretypes.h"],
+    strip_include_prefix = "/lcm/copied",
     visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "lcm-version",
-    hdrs = ["hdrs/lcm/lcm_version.h"],
-    strip_include_prefix = "/lcm/hdrs",
+    hdrs = ["copied/lcm/lcm_version.h"],
+    strip_include_prefix = "/lcm/copied",
     visibility = ["//lcmgen:__pkg__"],
 )
 
@@ -106,8 +126,14 @@ config_setting(
     constraint_values = ["@platforms//os:windows"],
 )
 
-SRCS = LCM_SOURCES + LCM_PRIVATE_HEADERS + select({
-    ":windows": LCM_SOURCES_WIN32,
+SRCS = [
+    "copied/lcm/" + x
+    for x in LCM_SOURCES + LCM_PRIVATE_HEADERS
+] + select({
+    ":windows": [
+        "copied/lcm/" + x
+        for x in LCM_SOURCES_WIN32
+    ],
     "//conditions:default": [],
 })
 
@@ -119,16 +145,16 @@ HDRS = LCM_INSTALL_HEADERS + select({
 cc_library(
     name = "_public_hdrs",
     hdrs = [
-        "hdrs/lcm/" + x
+        "copied/lcm/" + x
         for x in LCM_INSTALL_HEADERS
     ] + select({
         ":windows": [
-            "hdrs/lcm/" + x
+            "copied/lcm/" + x
             for x in LCM_INSTALL_HEADERS_WIN32
         ],
         "//conditions:default": [],
     }),
-    strip_include_prefix = "/lcm/hdrs",
+    strip_include_prefix = "/lcm/copied",
 )
 
 COPTS = [
